@@ -16,6 +16,8 @@ import { useTheme } from '@mui/material/styles';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MenuIcon from '@mui/icons-material/Menu';
 import CategoryIcon from '@mui/icons-material/Category';
+import { useNavigate } from 'react-router-dom';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface SidebarProps {
   open: boolean;
@@ -28,7 +30,12 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setSidebarOpen }) => {
 
   const drawerWidth = 240;
   const collapsedWidth = 64;
+  const navigate = useNavigate();
 
+  const handleLogin = () => {
+    // You can add validation/auth logic here
+    navigate('/');
+  };
   return (
     <Drawer
       variant={isMobile ? 'temporary' : 'permanent'}
@@ -64,6 +71,7 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setSidebarOpen }) => {
           <Typography
             variant="h6"
             noWrap
+            onClick={handleLogin}
             sx={{
               fontWeight: 'bold',
               position: 'absolute',
@@ -83,7 +91,9 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setSidebarOpen }) => {
       </Box>
 
       {/* Menu List */}
-      <Box sx={{ flexGrow: 1, pt: 2 }}>
+      <Box sx={{ flexGrow: 1, pt: 2 ,display: 'flex',
+          justifyContent: 'center',
+          position: 'relative',}}>
         <List>
           {/* Dashboard */}
           <ListItem disablePadding>
@@ -119,6 +129,30 @@ const Sidebar: React.FC<SidebarProps> = ({ open, setSidebarOpen }) => {
 
         </List>
       </Box>
+     <Box
+  sx={{
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    borderTop: '1px solid #e0e0e0',
+  }}
+>
+  <ListItem disablePadding>
+    <ListItemButton onClick={handleLogin}>
+      <ListItemIcon
+        sx={{
+          minWidth: 0,
+          mr: open ? 2 : 0,
+          justifyContent: 'center',
+        }}
+      >
+        <LogoutIcon />
+      </ListItemIcon>
+      {open && <ListItemText primary="Logout" />}
+    </ListItemButton>
+  </ListItem>
+</Box>
+
     </Drawer>
   );
 };
