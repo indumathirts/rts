@@ -1,74 +1,47 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+// ✅ Get all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      select: { id: true, name: true, email: true, createdAt: true }
+    });
     res.json(users);
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error('🔥 Error fetching users:', err);
     res.status(500).json({ error: 'Failed to fetch users' });
   }
 };
 
+// ✅ Get user by ID
 exports.getUserById = async (req, res) => {
-  const { id } = req.params;
   try {
-    const user = await prisma.user.findUnique({ where: { id: parseInt(id) } });
+    const user = await prisma.user.findUnique({
+      where: { id: parseInt(req.params.id) },
+      select: { id: true, name: true, email: true, createdAt: true }
+    });
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: 'Failed to fetch user' });
   }
 };
 
-// exports.createUser = async (req, res) => {
-//     const { name, email } = req.body;
-  
-//     try {
-//       // ✅ STEP 1: Check before insert
-//       const existingUser = await prisma.user.findUnique({
-//         where: { email }
-//       });
-  
-//       if (existingUser) {
-//         return res.status(409).json({ error: 'Email already exists' });
-//       }
-  
-//       // ✅ STEP 2: Only runs if above check passed
-//       const newUser = await prisma.user.create({
-//         data: { name, email }
-//       });
-  
-//       res.status(201).json(newUser);
-//     } catch (error) {
-//       console.error('Error creating user:', error);
-//       res.status(500).json({ error: 'Failed to create user' });
-//     }
-//   };
-const bcrypt = require('bcryptjs');
-
+// ✅ Create user
 exports.createUser = async (req, res) => {
   const { name, email, password } = req.body;
-
   try {
-    const exists = await prisma.user.findUnique({ where: { email } });
-    if (exists) return res.status(409).json({ error: 'Email already exists' });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
     const newUser = await prisma.user.create({
-      data: { name, email, password: hashedPassword }
+      data: { name, email, password }
     });
-
-    res.status(201).json({ id: newUser.id, name: newUser.name, email: newUser.email });
-  } catch (error) {
-    console.error('Error creating user:', error);
+    res.status(201).json(newUser);
+  } catch (err) {
     res.status(500).json({ error: 'Failed to create user' });
   }
 };
 
-
+// ✅ Update user
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
   const { name, email } = req.body;
@@ -78,17 +51,17 @@ exports.updateUser = async (req, res) => {
       data: { name, email }
     });
     res.json(updated);
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: 'Failed to update user' });
   }
 };
 
+// ✅ Delete user
 exports.deleteUser = async (req, res) => {
-  const { id } = req.params;
   try {
-    await prisma.user.delete({ where: { id: parseInt(id) } });
+    await prisma.user.delete({ where: { id: parseInt(req.params.id) } });
     res.json({ message: 'User deleted' });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({ error: 'Failed to delete user' });
   }
 };

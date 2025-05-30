@@ -1,0 +1,1 @@
+50 12 * * * /usr/bin/node /var/www/irts-v2/cron/jobs/send-mail.js >> /var/www/irts-v2/cron/logs/irts-mail.log 2>&1
