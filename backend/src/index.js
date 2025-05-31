@@ -10,6 +10,7 @@ app.use(express.json());
 const userRoutes = require('./routes/user.routes');
 // app.use('/api/users', userRoutes);
 app.use('/users', userRoutes); 
+
 // app.get('/users', (req, res) => {
 //   res.json([{ name: 'Alice' }, { name: 'Bob' }]);
 // });
