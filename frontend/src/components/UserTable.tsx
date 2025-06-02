@@ -96,6 +96,7 @@ const UserTable: React.FC = () => {
         <Table size="small">
           <TableHead>
             <TableRow>
+              <TableCell>S.No</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Email</TableCell>
               <TableCell>Password</TableCell>
@@ -112,8 +113,9 @@ const UserTable: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {users.map((user) => (
+            {users.map((user,index) => (
               <TableRow key={user.id}>
+                <TableCell>{index+1}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
                 <TableCell>{'*'.repeat(8)}</TableCell>
